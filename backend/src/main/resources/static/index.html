@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Concesionaria - Gestión de Vehículos</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      .btn-success {
+        background-color: #27ae60;
+      }
+      .btn-success:hover {
+        background-color: #229954;
+      }
+      .btn-danger {
+        background-color: #e74c3c;
+      }
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+      .btn-warning {
+        background-color: #f39c12;
+      }
+      .btn-warning:hover {
+        background-color: #e67e22;
+      }
+      #resultado {
+        background-color: #ecf0f1;
+        padding: 15px;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .vehiculos-list {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      .vehiculo-item {
+        border: 1px solid #ddd;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+      .vehiculo-disponible {
+        border-left: 4px solid #27ae60;
+      }
+      .vehiculo-no-disponible {
+        border-left: 4px solid #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🚗 Sistema Concesionaria</h1>
+      <p>Gestión de Vehículos - API REST</p>
+    </div>
+
+    <div class="container">
+      <!-- Formulario para agregar vehículo -->
+      <div class="card">
+        <h2>➕ Agregar Nuevo Vehículo</h2>
+        <form id="form-vehiculo">
+          <div class="form-group">
+            <label>Marca:</label>
+            <input type="text" id="marca" required />
+          </div>
+          <div class="form-group">
+            <label>Modelo:</label>
+            <input type="text" id="modelo" required />
+          </div>
+          <div class="form-group">
+            <label>Color:</label>
+            <input type="text" id="color" />
+          </div>
+          <div class="form-group">
+            <label>Número de Chasis:</label>
+            <input type="text" id="numeroChasis" required />
+          </div>
+          <div class="form-group">
+            <label>Número de Motor:</label>
+            <input type="text" id="numeroMotor" required />
+          </div>
+          <div class="form-group">
+            <label>Precio Base:</label>
+            <input type="number" id="precioBase" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Disponible para Venta:</label>
+            <select id="disponibleVenta">
+              <option value="true">Sí</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-success">Agregar Vehículo</button>
+        </form>
+      </div>
+
+      <!-- Acciones y búsquedas -->
+      <div class="card">
+        <h2>🔍 Acciones</h2>
+
+        <div class="form-group">
+          <button onclick="inicializarDatos()" class="btn-warning">
+            🔄 Inicializar Datos de Ejemplo
+          </button>
+          <button onclick="obtenerTodosLosVehiculos()" class="btn-success">
+            📋 Ver Todos los Vehículos
+          </button>
+          <button onclick="obtenerVehiculosDisponibles()">
+            ✅ Ver Disponibles
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label>Buscar por Número de Chasis:</label>
+          <input type="text" id="buscarChasis" placeholder="Ej: TOY001" />
+          <button onclick="buscarPorChasis()">🔍 Buscar</button>
+        </div>
+
+        <div class="form-group">
+          <label>Buscar por Marca:</label>
+          <input type="text" id="buscarMarca" placeholder="Ej: Toyota" />
+          <button onclick="buscarPorMarca()">🔍 Buscar</button>
+        </div>
+
+        <div class="form-group">
+          <label>Eliminar por Chasis:</label>
+          <input
+            type="text"
+            id="eliminarChasis"
+            placeholder="Número de chasis"
+          />
+          <button onclick="eliminarVehiculo()" class="btn-danger">
+            🗑️ Eliminar
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label>Cambiar Disponibilidad:</label>
+          <input
+            type="text"
+            id="cambiarChasis"
+            placeholder="Número de chasis"
+          />
+          <select id="nuevaDisponibilidad">
+            <option value="true">Disponible</option>
+            <option value="false">No Disponible</option>
+          </select>
+          <button onclick="cambiarDisponibilidad()">🔄 Cambiar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="card" style="margin-top: 20px">
+      <h2>📊 Resultados</h2>
+      <div id="resultado">
+        Aquí aparecerán los resultados de las operaciones...
+      </div>
+    </div>
+
+    <!-- Lista de vehículos -->
+    <div class="card" style="margin-top: 20px">
+      <h2>🚗 Lista de Vehículos</h2>
+      <div id="vehiculos-container" class="vehiculos-list">
+        <!-- Los vehículos aparecerán aquí -->
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "/api/vehiculos";
+
+      // Función para mostrar resultados
+      function mostrarResultado(data) {
+        document.getElementById("resultado").textContent = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      // Función para mostrar vehículos en la lista
+      function mostrarVehiculos(vehiculos) {
+        const container = document.getElementById("vehiculos-container");
+        if (!vehiculos || vehiculos.length === 0) {
+          container.innerHTML = "<p>No hay vehículos para mostrar.</p>";
+          return;
+        }
+
+        container.innerHTML = vehiculos
+          .map(
+            (vehiculo) => `
+                <div class="vehiculo-item ${
+                  vehiculo.disponibleVenta
+                    ? "vehiculo-disponible"
+                    : "vehiculo-no-disponible"
+                }">
+                    <strong>${vehiculo.marca} ${vehiculo.modelo}</strong> (${
+              vehiculo.color
+            })<br>
+                    <small>
+                        Chasis: ${vehiculo.numeroChasis} | Motor: ${
+              vehiculo.numeroMotor
+            }<br>
+                        Precio: $${vehiculo.precioBase} | ID: ${
+              vehiculo.idVehiculo
+            }<br>
+                        Estado: ${
+                          vehiculo.disponibleVenta
+                            ? "✅ Disponible"
+                            : "❌ No Disponible"
+                        }
+                    </small>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Agregar vehículo
+      document
+        .getElementById("form-vehiculo")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const vehiculo = {
+            marca: document.getElementById("marca").value,
+            modelo: document.getElementById("modelo").value,
+            color: document.getElementById("color").value,
+            numeroChasis: document.getElementById("numeroChasis").value,
+            numeroMotor: document.getElementById("numeroMotor").value,
+            precioBase:
+              parseFloat(document.getElementById("precioBase").value) || 0,
+            disponibleVenta:
+              document.getElementById("disponibleVenta").value === "true",
+          };
+
+          try {
+            const response = await fetch(API_BASE, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(vehiculo),
+            });
+            const result = await response.json();
+            mostrarResultado(result);
+
+            if (response.ok) {
+              document.getElementById("form-vehiculo").reset();
+              obtenerTodosLosVehiculos(); // Actualizar lista
+            }
+          } catch (error) {
+            mostrarResultado({ error: "Error de conexión: " + error.message });
+          }
+        });
+
+      // Inicializar datos de ejemplo
+      async function inicializarDatos() {
+        try {
+          const response = await fetch(`${API_BASE}/inicializar`, {
+            method: "POST",
+          });
+          const result = await response.json();
+          mostrarResultado(result);
+          if (response.ok && result.vehiculos) {
+            mostrarVehiculos(result.vehiculos);
+          }
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Obtener todos los vehículos
+      async function obtenerTodosLosVehiculos() {
+        try {
+          const response = await fetch(API_BASE);
+          const vehiculos = await response.json();
+          mostrarResultado(vehiculos);
+          mostrarVehiculos(vehiculos);
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Obtener vehículos disponibles
+      async function obtenerVehiculosDisponibles() {
+        try {
+          const response = await fetch(`${API_BASE}/disponibles`);
+          const vehiculos = await response.json();
+          mostrarResultado(vehiculos);
+          mostrarVehiculos(vehiculos);
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Buscar por chasis
+      async function buscarPorChasis() {
+        const chasis = document.getElementById("buscarChasis").value;
+        if (!chasis) return;
+
+        try {
+          const response = await fetch(`${API_BASE}/${chasis}`);
+          const result = await response.json();
+          mostrarResultado(result);
+          if (response.ok && !result.error) {
+            mostrarVehiculos([result]);
+          }
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Buscar por marca
+      async function buscarPorMarca() {
+        const marca = document.getElementById("buscarMarca").value;
+        if (!marca) return;
+
+        try {
+          const response = await fetch(`${API_BASE}/marca/${marca}`);
+          const vehiculos = await response.json();
+          mostrarResultado(vehiculos);
+          mostrarVehiculos(vehiculos);
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Eliminar vehículo
+      async function eliminarVehiculo() {
+        const chasis = document.getElementById("eliminarChasis").value;
+        if (!chasis || !confirm("¿Está seguro de eliminar este vehículo?"))
+          return;
+
+        try {
+          const response = await fetch(`${API_BASE}/${chasis}`, {
+            method: "DELETE",
+          });
+          const result = await response.json();
+          mostrarResultado(result);
+          if (response.ok) {
+            document.getElementById("eliminarChasis").value = "";
+            obtenerTodosLosVehiculos(); // Actualizar lista
+          }
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Cambiar disponibilidad
+      async function cambiarDisponibilidad() {
+        const chasis = document.getElementById("cambiarChasis").value;
+        const disponible =
+          document.getElementById("nuevaDisponibilidad").value === "true";
+        if (!chasis) return;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/${chasis}/disponibilidad?disponible=${disponible}`,
+            {
+              method: "PATCH",
+            }
+          );
+          const result = await response.json();
+          mostrarResultado(result);
+          if (response.ok) {
+            document.getElementById("cambiarChasis").value = "";
+            obtenerTodosLosVehiculos(); // Actualizar lista
+          }
+        } catch (error) {
+          mostrarResultado({ error: "Error de conexión: " + error.message });
+        }
+      }
+
+      // Cargar datos al inicio
+      window.onload = function () {
+        mostrarResultado({
+          mensaje:
+            "Sistema cargado. Use los botones para interactuar con la API.",
+        });
+      };
+    </script>
+  </body>
+</html>

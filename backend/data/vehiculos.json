@@ -1,0 +1,12 @@
+[ {
+  "pedidos" : null,
+  "numeroChasis" : "CHI003",
+  "marca" : "Honda",
+  "modelo" : "CBR250",
+  "color" : "Rojo",
+  "numeroMotor" : "MOT003",
+  "precioBase" : 8000.0,
+  "caracteristicas" : "250cc, Deportiva",
+  "tipo" : "MOTO",
+  "disponibleVenta" : true
+} ]

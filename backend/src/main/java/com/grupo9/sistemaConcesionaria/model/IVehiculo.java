@@ -1,0 +1,10 @@
+package com.grupo9.sistemaConcesionaria.model;
+
+public interface IVehiculo {
+    String getMarca();
+    String getModelo();
+    double getPrecioBase();
+    // Add other methods that Pedido might need from Vehiculo
+    // For example:
+    // String getIdentificador(); // Like numeroChasis
+} 

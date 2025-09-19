@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Usuarios - Sistema Concesionaria</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        margin: 0;
+        color: #4a5568;
+        text-align: center;
+      }
+
+      .nav-links {
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .nav-links a {
+        margin: 0 1rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .tab-button {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        padding: 1rem 2rem;
+        margin: 0 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .tab-button.active {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .tab-content {
+        display: none;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #4a5568;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin: 1.5rem 0;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a67d8;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: #48bb78;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: #f56565;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #e53e3e;
+        transform: translateY(-2px);
+      }
+
+      .btn-info {
+        background: #4299e1;
+        color: white;
+      }
+
+      .btn-info:hover {
+        background: #3182ce;
+        transform: translateY(-2px);
+      }
+
+      .search-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .list-section {
+        margin-top: 2rem;
+      }
+
+      .user-list {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .user-card {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .user-info h4 {
+        margin: 0 0 0.5rem 0;
+        color: #2d3748;
+      }
+
+      .user-info p {
+        margin: 0;
+        color: #718096;
+        font-size: 0.9rem;
+      }
+
+      .message {
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+
+      .message.success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #48bb78;
+      }
+
+      .message.error {
+        background: #fed7d7;
+        color: #742a2a;
+        border-left: 4px solid #f56565;
+      }
+
+      .stats {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .user-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .tabs {
+          flex-wrap: wrap;
+        }
+
+        .tab-button {
+          margin: 0.25rem;
+          padding: 0.75rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🚗 Sistema de Concesionaria - Gestión de Usuarios</h1>
+      <div class="nav-links">
+        <a href="/">🏠 Inicio</a>
+        <a href="/vehiculos.html">🚙 Vehículos</a>
+        <a href="/usuarios.html">👥 Usuarios</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="stats" id="stats">
+        <h3>📊 Estadísticas del Sistema</h3>
+        <p id="stats-info">Cargando estadísticas...</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-button active" onclick="openTab('clientes')">
+          👤 Clientes
+        </button>
+        <button class="tab-button" onclick="openTab('administradores')">
+          👔 Administradores
+        </button>
+        <button class="tab-button" onclick="openTab('vendedores')">
+          🤝 Vendedores
+        </button>
+        <button class="tab-button" onclick="openTab('consultas')">
+          🔍 Consultas
+        </button>
+      </div>
+
+      <!-- TAB CLIENTES -->
+      <div id="clientes" class="tab-content active">
+        <h2>👤 Gestión de Clientes</h2>
+
+        <form id="clienteForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="clienteNombre">Nombre:</label>
+              <input type="text" id="clienteNombre" required />
+            </div>
+            <div class="form-group">
+              <label for="clienteDocumento">Documento:</label>
+              <input type="text" id="clienteDocumento" required />
+            </div>
+            <div class="form-group">
+              <label for="clienteEmail">Email:</label>
+              <input type="email" id="clienteEmail" />
+            </div>
+            <div class="form-group">
+              <label for="clienteTelefono">Teléfono:</label>
+              <input type="tel" id="clienteTelefono" />
+            </div>
+            <div class="form-group">
+              <label for="clienteDireccion">Dirección:</label>
+              <input type="text" id="clienteDireccion" />
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+              💾 Registrar Cliente
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="listarClientes()"
+            >
+              📋 Listar Clientes
+            </button>
+            <button type="reset" class="btn btn-info">🔄 Limpiar</button>
+          </div>
+        </form>
+
+        <div class="search-section">
+          <h3>🔍 Buscar Cliente</h3>
+          <div style="display: flex; gap: 1rem; align-items: end">
+            <div class="form-group" style="flex: 1">
+              <label for="buscarClienteDoc">Documento:</label>
+              <input type="text" id="buscarClienteDoc" />
+            </div>
+            <button class="btn btn-info" onclick="buscarCliente()">
+              🔍 Buscar
+            </button>
+            <button class="btn btn-danger" onclick="eliminarCliente()">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="list-section">
+          <div id="clientesList" class="user-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB ADMINISTRADORES -->
+      <div id="administradores" class="tab-content">
+        <h2>👔 Gestión de Administradores</h2>
+
+        <form id="adminForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="adminNombre">Nombre:</label>
+              <input type="text" id="adminNombre" required />
+            </div>
+            <div class="form-group">
+              <label for="adminApellido">Apellido:</label>
+              <input type="text" id="adminApellido" required />
+            </div>
+            <div class="form-group">
+              <label for="adminEmail">Email:</label>
+              <input type="email" id="adminEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="adminTelefono">Teléfono:</label>
+              <input type="tel" id="adminTelefono" />
+            </div>
+            <div class="form-group">
+              <label for="adminArea">Área:</label>
+              <input
+                type="text"
+                id="adminArea"
+                placeholder="Ej: Sistemas, Ventas, RRHH"
+              />
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+              💾 Registrar Administrador
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="listarUsuariosSistema()"
+            >
+              📋 Listar Usuarios
+            </button>
+            <button type="reset" class="btn btn-info">🔄 Limpiar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB VENDEDORES -->
+      <div id="vendedores" class="tab-content">
+        <h2>🤝 Gestión de Vendedores</h2>
+
+        <form id="vendedorForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="vendedorNombre">Nombre:</label>
+              <input type="text" id="vendedorNombre" required />
+            </div>
+            <div class="form-group">
+              <label for="vendedorApellido">Apellido:</label>
+              <input type="text" id="vendedorApellido" required />
+            </div>
+            <div class="form-group">
+              <label for="vendedorEmail">Email:</label>
+              <input type="email" id="vendedorEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="vendedorTelefono">Teléfono:</label>
+              <input type="tel" id="vendedorTelefono" />
+            </div>
+            <div class="form-group">
+              <label for="vendedorSucursal">Sucursal:</label>
+              <input
+                type="text"
+                id="vendedorSucursal"
+                placeholder="Ej: Centro, Norte, Sur"
+              />
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+              💾 Registrar Vendedor
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="listarUsuariosSistema()"
+            >
+              📋 Listar Usuarios
+            </button>
+            <button type="reset" class="btn btn-info">🔄 Limpiar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB CONSULTAS -->
+      <div id="consultas" class="tab-content">
+        <h2>🔍 Consultas y Gestión</h2>
+
+        <div class="search-section">
+          <h3>🔍 Buscar Usuario del Sistema</h3>
+          <div style="display: flex; gap: 1rem; align-items: end">
+            <div class="form-group" style="flex: 1">
+              <label for="buscarUsuarioEmail">Email:</label>
+              <input type="email" id="buscarUsuarioEmail" />
+            </div>
+            <button class="btn btn-info" onclick="buscarUsuarioSistema()">
+              🔍 Buscar
+            </button>
+            <button class="btn btn-danger" onclick="eliminarUsuarioSistema()">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-success" onclick="listarClientes()">
+            👥 Listar Todos los Clientes
+          </button>
+          <button class="btn btn-success" onclick="listarUsuariosSistema()">
+            👔 Listar Usuarios del Sistema
+          </button>
+          <button class="btn btn-info" onclick="cargarEstadisticas()">
+            📊 Actualizar Estadísticas
+          </button>
+          <button class="btn btn-danger" onclick="limpiarDatos()">
+            🗑️ Limpiar Todos los Datos
+          </button>
+        </div>
+
+        <div class="list-section">
+          <div id="consultaResultados" class="user-list"></div>
+        </div>
+      </div>
+
+      <div id="messages"></div>
+    </div>
+
+    <script>
+      const API_BASE = "/api/usuarios";
+
+      // Gestión de tabs
+      function openTab(tabName) {
+        const tabContents = document.querySelectorAll(".tab-content");
+        const tabButtons = document.querySelectorAll(".tab-button");
+
+        tabContents.forEach((content) => content.classList.remove("active"));
+        tabButtons.forEach((button) => button.classList.remove("active"));
+
+        document.getElementById(tabName).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      // Utility functions
+      function showMessage(message, type = "success") {
+        const messagesDiv = document.getElementById("messages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = message;
+        messagesDiv.appendChild(messageDiv);
+
+        setTimeout(() => {
+          messageDiv.remove();
+        }, 5000);
+      }
+
+      function clearMessages() {
+        document.getElementById("messages").innerHTML = "";
+      }
+
+      // Cargar estadísticas
+      async function cargarEstadisticas() {
+        try {
+          const response = await fetch(`${API_BASE}/estadisticas`);
+          const stats = await response.json();
+          document.getElementById("stats-info").textContent = stats.informacion;
+        } catch (error) {
+          console.error("Error cargando estadísticas:", error);
+          document.getElementById("stats-info").textContent =
+            "Error al cargar estadísticas";
+        }
+      }
+
+      // CLIENTES
+      document
+        .getElementById("clienteForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          clearMessages();
+
+          const cliente = {
+            nombre: document.getElementById("clienteNombre").value,
+            documento: document.getElementById("clienteDocumento").value,
+            correoElectronico: document.getElementById("clienteEmail").value,
+            telefono: document.getElementById("clienteTelefono").value,
+            direccion: document.getElementById("clienteDireccion").value,
+          };
+
+          try {
+            const response = await fetch(`${API_BASE}/clientes`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(cliente),
+            });
+
+            if (response.ok) {
+              showMessage("✅ Cliente registrado exitosamente!", "success");
+              document.getElementById("clienteForm").reset();
+              cargarEstadisticas();
+            } else {
+              const error = await response.json();
+              showMessage(`❌ Error: ${error.detalle || error.error}`, "error");
+            }
+          } catch (error) {
+            showMessage("❌ Error de conexión", "error");
+          }
+        });
+
+      async function listarClientes() {
+        try {
+          const response = await fetch(`${API_BASE}/clientes`);
+          const clientes = await response.json();
+
+          const lista = document.getElementById("clientesList");
+          lista.innerHTML = "";
+
+          if (clientes.length === 0) {
+            lista.innerHTML =
+              '<p style="text-align: center; color: #718096;">No hay clientes registrados</p>';
+            return;
+          }
+
+          clientes.forEach((cliente) => {
+            const card = document.createElement("div");
+            card.className = "user-card";
+            card.innerHTML = `
+                        <div class="user-info">
+                            <h4>👤 ${cliente.nombre}</h4>
+                            <p><strong>Documento:</strong> ${
+                              cliente.documento
+                            }</p>
+                            <p><strong>Email:</strong> ${
+                              cliente.correoElectronico || "No especificado"
+                            }</p>
+                            <p><strong>Teléfono:</strong> ${
+                              cliente.telefono || "No especificado"
+                            }</p>
+                            <p><strong>Dirección:</strong> ${
+                              cliente.direccion || "No especificada"
+                            }</p>
+                        </div>
+                    `;
+            lista.appendChild(card);
+          });
+
+          showMessage(`📋 ${clientes.length} clientes encontrados`, "success");
+        } catch (error) {
+          showMessage("❌ Error al cargar clientes", "error");
+        }
+      }
+
+      async function buscarCliente() {
+        const documento = document.getElementById("buscarClienteDoc").value;
+        if (!documento) {
+          showMessage("❌ Ingrese un documento para buscar", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/clientes/${documento}`);
+          if (response.ok) {
+            const cliente = await response.json();
+            const lista = document.getElementById("clientesList");
+            lista.innerHTML = `
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h4>👤 ${cliente.nombre}</h4>
+                                <p><strong>Documento:</strong> ${
+                                  cliente.documento
+                                }</p>
+                                <p><strong>Email:</strong> ${
+                                  cliente.correoElectronico || "No especificado"
+                                }</p>
+                                <p><strong>Teléfono:</strong> ${
+                                  cliente.telefono || "No especificado"
+                                }</p>
+                                <p><strong>Dirección:</strong> ${
+                                  cliente.direccion || "No especificada"
+                                }</p>
+                            </div>
+                        </div>
+                    `;
+            showMessage("✅ Cliente encontrado", "success");
+          } else {
+            const error = await response.json();
+            showMessage(`❌ ${error.error}: ${error.detalle}`, "error");
+            document.getElementById("clientesList").innerHTML = "";
+          }
+        } catch (error) {
+          showMessage("❌ Error de conexión", "error");
+        }
+      }
+
+      async function eliminarCliente() {
+        const documento = document.getElementById("buscarClienteDoc").value;
+        if (!documento) {
+          showMessage("❌ Ingrese un documento para eliminar", "error");
+          return;
+        }
+
+        if (
+          !confirm(
+            `¿Está seguro de eliminar el cliente con documento ${documento}?`
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/clientes/${documento}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            showMessage("✅ Cliente eliminado exitosamente", "success");
+            document.getElementById("buscarClienteDoc").value = "";
+            document.getElementById("clientesList").innerHTML = "";
+            cargarEstadisticas();
+          } else {
+            const error = await response.json();
+            showMessage(`❌ ${error.error}: ${error.detalle}`, "error");
+          }
+        } catch (error) {
+          showMessage("❌ Error de conexión", "error");
+        }
+      }
+
+      // ADMINISTRADORES
+      document
+        .getElementById("adminForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          clearMessages();
+
+          const admin = {
+            nombre: document.getElementById("adminNombre").value,
+            apellido: document.getElementById("adminApellido").value,
+            mail: document.getElementById("adminEmail").value,
+            telefono: document.getElementById("adminTelefono").value,
+            area: document.getElementById("adminArea").value,
+          };
+
+          try {
+            const response = await fetch(`${API_BASE}/administradores`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(admin),
+            });
+
+            if (response.ok) {
+              showMessage(
+                "✅ Administrador registrado exitosamente!",
+                "success"
+              );
+              document.getElementById("adminForm").reset();
+              cargarEstadisticas();
+            } else {
+              const error = await response.json();
+              showMessage(`❌ Error: ${error.detalle || error.error}`, "error");
+            }
+          } catch (error) {
+            showMessage("❌ Error de conexión", "error");
+          }
+        });
+
+      // VENDEDORES
+      document
+        .getElementById("vendedorForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          clearMessages();
+
+          const vendedor = {
+            nombre: document.getElementById("vendedorNombre").value,
+            apellido: document.getElementById("vendedorApellido").value,
+            mail: document.getElementById("vendedorEmail").value,
+            telefono: document.getElementById("vendedorTelefono").value,
+            sucursal: document.getElementById("vendedorSucursal").value,
+          };
+
+          try {
+            const response = await fetch(`${API_BASE}/vendedores`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(vendedor),
+            });
+
+            if (response.ok) {
+              showMessage("✅ Vendedor registrado exitosamente!", "success");
+              document.getElementById("vendedorForm").reset();
+              cargarEstadisticas();
+            } else {
+              const error = await response.json();
+              showMessage(`❌ Error: ${error.detalle || error.error}`, "error");
+            }
+          } catch (error) {
+            showMessage("❌ Error de conexión", "error");
+          }
+        });
+
+      // USUARIOS DEL SISTEMA
+      async function listarUsuariosSistema() {
+        try {
+          const response = await fetch(`${API_BASE}/sistema`);
+          const usuarios = await response.json();
+
+          const lista = document.getElementById("consultaResultados");
+          lista.innerHTML = "";
+
+          if (usuarios.length === 0) {
+            lista.innerHTML =
+              '<p style="text-align: center; color: #718096;">No hay usuarios del sistema registrados</p>';
+            return;
+          }
+
+          usuarios.forEach((usuario) => {
+            const card = document.createElement("div");
+            card.className = "user-card";
+            const rolIcon = usuario.rol === "ADMINISTRADOR" ? "👔" : "🤝";
+            card.innerHTML = `
+                        <div class="user-info">
+                            <h4>${rolIcon} ${usuario.nombre} ${
+              usuario.apellido
+            }</h4>
+                            <p><strong>Email:</strong> ${usuario.mail}</p>
+                            <p><strong>Rol:</strong> ${usuario.rol}</p>
+                            <p><strong>Teléfono:</strong> ${
+                              usuario.telefono || "No especificado"
+                            }</p>
+                            ${
+                              usuario.area
+                                ? `<p><strong>Área:</strong> ${usuario.area}</p>`
+                                : ""
+                            }
+                            ${
+                              usuario.sucursal
+                                ? `<p><strong>Sucursal:</strong> ${usuario.sucursal}</p>`
+                                : ""
+                            }
+                            ${
+                              usuario.ventasTotales !== undefined
+                                ? `<p><strong>Ventas:</strong> ${usuario.ventasTotales}</p>`
+                                : ""
+                            }
+                        </div>
+                    `;
+            lista.appendChild(card);
+          });
+
+          showMessage(`📋 ${usuarios.length} usuarios encontrados`, "success");
+        } catch (error) {
+          showMessage("❌ Error al cargar usuarios", "error");
+        }
+      }
+
+      async function buscarUsuarioSistema() {
+        const email = document.getElementById("buscarUsuarioEmail").value;
+        if (!email) {
+          showMessage("❌ Ingrese un email para buscar", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/sistema/${email}`);
+          if (response.ok) {
+            const usuario = await response.json();
+            const lista = document.getElementById("consultaResultados");
+            const rolIcon = usuario.rol === "ADMINISTRADOR" ? "👔" : "🤝";
+            lista.innerHTML = `
+                        <div class="user-card">
+                            <div class="user-info">
+                                <h4>${rolIcon} ${usuario.nombre} ${
+              usuario.apellido
+            }</h4>
+                                <p><strong>Email:</strong> ${usuario.mail}</p>
+                                <p><strong>Rol:</strong> ${usuario.rol}</p>
+                                <p><strong>Teléfono:</strong> ${
+                                  usuario.telefono || "No especificado"
+                                }</p>
+                                ${
+                                  usuario.area
+                                    ? `<p><strong>Área:</strong> ${usuario.area}</p>`
+                                    : ""
+                                }
+                                ${
+                                  usuario.sucursal
+                                    ? `<p><strong>Sucursal:</strong> ${usuario.sucursal}</p>`
+                                    : ""
+                                }
+                                ${
+                                  usuario.ventasTotales !== undefined
+                                    ? `<p><strong>Ventas:</strong> ${usuario.ventasTotales}</p>`
+                                    : ""
+                                }
+                            </div>
+                        </div>
+                    `;
+            showMessage("✅ Usuario encontrado", "success");
+          } else {
+            const error = await response.json();
+            showMessage(`❌ ${error.error}: ${error.detalle}`, "error");
+            document.getElementById("consultaResultados").innerHTML = "";
+          }
+        } catch (error) {
+          showMessage("❌ Error de conexión", "error");
+        }
+      }
+
+      async function eliminarUsuarioSistema() {
+        const email = document.getElementById("buscarUsuarioEmail").value;
+        if (!email) {
+          showMessage("❌ Ingrese un email para eliminar", "error");
+          return;
+        }
+
+        if (
+          !confirm(`¿Está seguro de eliminar el usuario con email ${email}?`)
+        ) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/sistema/${email}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            showMessage("✅ Usuario eliminado exitosamente", "success");
+            document.getElementById("buscarUsuarioEmail").value = "";
+            document.getElementById("consultaResultados").innerHTML = "";
+            cargarEstadisticas();
+          } else {
+            const error = await response.json();
+            showMessage(`❌ ${error.error}: ${error.detalle}`, "error");
+          }
+        } catch (error) {
+          showMessage("❌ Error de conexión", "error");
+        }
+      }
+
+      async function limpiarDatos() {
+        if (
+          !confirm(
+            "¿Está seguro de eliminar TODOS los datos? Esta acción no se puede deshacer."
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/limpiar`, {
+            method: "POST",
+          });
+
+          if (response.ok) {
+            showMessage("✅ Todos los datos han sido eliminados", "success");
+            document.getElementById("clientesList").innerHTML = "";
+            document.getElementById("consultaResultados").innerHTML = "";
+            cargarEstadisticas();
+          } else {
+            showMessage("❌ Error al limpiar datos", "error");
+          }
+        } catch (error) {
+          showMessage("❌ Error de conexión", "error");
+        }
+      }
+
+      // Cargar estadísticas al iniciar
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarEstadisticas();
+      });
+    </script>
+  </body>
+</html>
