@@ -463,16 +463,6 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 ### Monitoreo de Base de Datos
 Acceder a la consola H2: http://localhost:8080/h2-console
 
-## 🚀 Próximas Funcionalidades
-
-- [ ] Sistema de inventario avanzado
-- [ ] Integración con sistemas de pago
-- [ ] Dashboard de analytics
-- [ ] API de terceros para valuación
-- [ ] Sistema de citas y test drives
-- [ ] Módulo de servicios post-venta
-- [ ] Integración con redes sociales
-- [ ] Sistema de CRM avanzado
 
 ## 👥 Contribuir
 
@@ -485,7 +475,3 @@ Para contribuir al proyecto:
 5. **Crear** un Pull Request
 
 
-
-## 🎉 ¡Gracias por usar el Sistema de Gestión para Concesionarias!
-
-Este README te proporciona toda la información necesaria para instalar, configurar y usar el sistema. Si tienes alguna pregunta o sugerencia, no dudes en contactarnos.
