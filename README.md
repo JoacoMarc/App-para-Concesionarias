@@ -484,26 +484,8 @@ Para contribuir al proyecto:
 4. **Push** a la branch
 5. **Crear** un Pull Request
 
-## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 👨‍💻 Desarrolladores
-
-- **Equipo Grupo 9** - Desarrollo inicial
-- **Concesionaria AutoMax** - Especificaciones funcionales
-
-## 📞 Soporte
-
-Para soporte técnico:
-- **Email**: soporte@concesionaria-automax.com
-- **GitHub Issues**: [Crear Issue](https://github.com/JoacoMarc/App-para-Concesionarias/issues)
-- **Documentación**: [Wiki del Proyecto](https://github.com/JoacoMarc/App-para-Concesionarias/wiki)
-
----
 
 ## 🎉 ¡Gracias por usar el Sistema de Gestión para Concesionarias!
 
 Este README te proporciona toda la información necesaria para instalar, configurar y usar el sistema. Si tienes alguna pregunta o sugerencia, no dudes en contactarnos.
-
-**¡Happy Coding! 🚗💨**
